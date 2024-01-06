@@ -1,4 +1,4 @@
-# AWS EC2 Instance Provisioning with Terraform and Ansible
+# 3Proxy with Terraform and Ansible
 
 This project automates the provisioning and setup of AWS EC2 instances using Terraform and Ansible to create proxies with 3Proxy.
 
