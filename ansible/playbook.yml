@@ -1,0 +1,38 @@
+---
+- name: Setup 3proxy server
+  hosts: all
+  become: true
+  vars:
+    ansible_ssh_private_key_file: PATH_TO_YOU_PEM_KEY.pem
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: 'safe'
+
+    - name: Download 3proxy package
+      get_url:
+        url: https://github.com/3proxy/3proxy/releases/download/0.9.4/3proxy-0.9.4.x86_64.deb
+        dest: /tmp/3proxy-0.9.4.x86_64.deb
+
+    - name: Install 3proxy package
+      apt:
+        deb: /tmp/3proxy-0.9.4.x86_64.deb
+
+    - name: Configure 3proxy
+      copy:
+        content: |
+          daemon
+          nserver 8.8.8.8
+          nserver 8.8.4.4
+          socks -p1080
+          allow YOURPUBLICIP/32
+        dest: /etc/3proxy/3proxy.cfg
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Restart 3proxy service
+      systemd:
+        name: 3proxy
+        state: restarted
